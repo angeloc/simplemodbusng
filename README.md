@@ -2,7 +2,7 @@
 
 SimpleModbus is a collection of Arduino libraries that enables you to communicate serially using the Modicon Modbus RTU protocol.
 
-This project was born as an updated version of http://code.google.com/p/simple-modbus/ by Bester Juan because it lacks support for commands other than 3 and 16. More important the code is on github, so you can contribute more easily.
+This project was born as an updated version of http://code.google.com/p/simple-modbus/ by Bester Juan because it lacks support for commands other than 3 and 16. More important the code is now on github, so you can contribute more easily.
 
 ## Features
 
