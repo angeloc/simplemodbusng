@@ -82,7 +82,7 @@
 #include "Arduino.h"
 
 // function definitions
-void modbus_configure(long baud, unsigned char _doublespeed, byte _slaveID, byte _TxEnablePin, unsigned int _holdingRegsSize);
+void modbus_configure(long baud, byte _slaveID, byte _TxEnablePin, unsigned int _holdingRegsSize, unsigned char _lowLatency);
 unsigned int modbus_update(unsigned int *holdingRegs);
  
 
