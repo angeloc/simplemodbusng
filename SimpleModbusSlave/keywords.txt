@@ -1,0 +1,2 @@
+modbus_configure KEYWORD2
+modbus_update	 KEYWORD2

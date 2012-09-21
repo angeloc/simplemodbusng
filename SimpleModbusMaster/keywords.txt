@@ -1,0 +1,8 @@
+Packet	KEYWORD1
+packetPointer	KEYWORD1
+modbus_configure	KEYWORD2
+modbus_port	KEYWORD2
+
+###### Constants ######
+READ_HOLDING_REGISTERS	LITERAL1
+PRESET_MULTIPLE_REGISTERS	LITERAL1

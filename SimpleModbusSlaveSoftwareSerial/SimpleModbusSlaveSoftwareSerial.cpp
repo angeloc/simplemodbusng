@@ -1,4 +1,5 @@
-#include "SimpleModbusSlave.h"
+#include "SimpleModbusSlaveSs.h"
+#include "SoftwareSerial.h"
 
 #define BUFFER_SIZE 128
 
@@ -19,23 +20,25 @@ void exceptionResponse(unsigned char exception);
 unsigned int calculateCRC(unsigned char bufferSize); 
 void sendPacket(unsigned char bufferSize);
 
+SoftwareSerial mySerial(0, 1);
+
 unsigned int modbus_update(unsigned int *holdingRegs)
 {
   unsigned char buffer = 0;
   unsigned char overflow = 0;
   
-  while (Serial.available())
+  while (mySerial.available())
   {
     // The maximum number of bytes is limited to the serial buffer size of 128 bytes
     // If more bytes is received than the BUFFER_SIZE the overflow flag will be set and the 
     // serial buffer will be red untill all the data is cleared from the receive buffer.
     if (overflow) 
-      Serial.read();
+      mySerial.read();
     else
     {
       if (buffer == BUFFER_SIZE)
         overflow = 1;
-      frame[buffer] = Serial.read();
+      frame[buffer] = mySerial.read();
       buffer++;
     }
     delayMicroseconds(T1_5); // inter character time out
@@ -190,7 +193,7 @@ void exceptionResponse(unsigned char exception)
 void modbus_configure(long baud, unsigned char _slaveID, unsigned char _TxEnablePin, unsigned int _holdingRegsSize)
 {
   slaveID = _slaveID;
-  Serial.begin(baud);
+  mySerial.begin(baud);
   
   if (_TxEnablePin > 1) 
   { // pin 0 & pin 1 are reserved for RX/TX. To disable set txenpin < 2
@@ -211,7 +214,7 @@ void modbus_configure(long baud, unsigned char _slaveID, unsigned char _TxEnable
   if (baud > 19200)
   {
     T1_5 = 150; 
-    T3_5 = 250; 
+    T3_5 = 350; 
   }
   else 
   {
@@ -251,9 +254,9 @@ void sendPacket(unsigned char bufferSize)
     digitalWrite(TxEnablePin, HIGH);
     
   for (unsigned char i = 0; i < bufferSize; i++)
-    Serial.write(frame[i]);
+    mySerial.write(frame[i]);
     
-  Serial.flush();
+  mySerial.flush();
   
   // allow a frame delay to indicate end of transmission
   delayMicroseconds(T3_5); 
