@@ -4,6 +4,8 @@ SimpleModbus is a collection of Arduino libraries that enables you to communicat
 
 This project was born as an updated version of http://code.google.com/p/simple-modbus/ by Bester Juan because it lacks support for commands other than 3 and 16. More important the code is now on github, so you can contribute more easily.
 
+This projects is actively maintained, so feel free to ask for features or reporting bugs!
+
 ## Features
 
 This library adds support for command 6 and provides a more extensive support for arduino pins. 
