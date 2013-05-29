@@ -1,4 +1,4 @@
-#include "SimpleModbusSlaveSs.h"
+#include "SimpleModbusSlaveSoftwareSerial.h"
 #include "SoftwareSerial.h"
 
 #define BUFFER_SIZE 128
