@@ -207,7 +207,7 @@ void modbus_configure(long baud, unsigned char _slaveID, unsigned char _TxEnable
   // 1000ms/960characters is 1.04167ms per character and finaly modbus states an
   // intercharacter must be 1.5T or 1.5 times longer than a normal character and thus
   // 1.5T = 1.04167ms * 1.5 = 1.5625ms. A frame delay is 3.5T.
-  // Added sperimentally low latency delays. This makes the implementation
+  // Added experimental low latency delays. This makes the implementation
   // non-standard but practically it works with all major modbus master implementations.
   
   if (baud == 1000000 && _lowLatency)
