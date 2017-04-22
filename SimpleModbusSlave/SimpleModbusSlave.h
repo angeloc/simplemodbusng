@@ -78,12 +78,25 @@
  http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b.pdf
  http://www.modbus.org/docs/PI_MBUS_300.pdf
 */
+#ifdef _VARIANT_ARDUINO_DUE_X_
+// Due has build in serial
+// https://www.arduino.cc/en/reference/serial
+#define SSerialRX        15  //Serial3 Receive pin (just a reference, can't be changed)
+#define SSerialTX        14  //Serial3 Transmit pin (just a reference, can't be changed)
+#define SSerialTxControl 16   //RS485 Direction control
+
+#else
+#define SSerialRX        10  //Serial Receive pin
+#define SSerialTX        11  //Serial Transmit pin
+#define SSerialTxControl 3   //RS485 Direction control
+#endif
 
 #include "Arduino.h"
 
 // function definitions
-void modbus_configure(long baud, byte _slaveID, byte _TxEnablePin, unsigned int _holdingRegsSize, unsigned char _lowLatency);
+void modbus_configure(long baud, byte _slaveID, byte _TxEnablePin, unsigned int _holdingRegsSize);
+
 unsigned int modbus_update(unsigned int *holdingRegs);
- 
+
 
 #endif
