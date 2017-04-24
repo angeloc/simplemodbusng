@@ -1,3 +1,5 @@
+#include "Arduino.h"
+
 #ifndef SIMPLE_MODBUS_SLAVE_H
 #define SIMPLE_MODBUS_SLAVE_H
 
@@ -81,9 +83,9 @@
 #ifdef _VARIANT_ARDUINO_DUE_X_
 // Due has build in serial
 // https://www.arduino.cc/en/reference/serial
-#define SSerialRX        15  //Serial3 Receive pin (just a reference, can't be changed)
-#define SSerialTX        14  //Serial3 Transmit pin (just a reference, can't be changed)
-#define SSerialTxControl 16   //RS485 Direction control
+#define SSerialRX        19  //Serial3 Receive pin (just a reference, can't be changed)
+#define SSerialTX        18  //Serial3 Transmit pin (just a reference, can't be changed)
+#define SSerialTxControl 20   //RS485 Direction control
 
 #else
 #define SSerialRX        10  //Serial Receive pin
@@ -91,12 +93,8 @@
 #define SSerialTxControl 3   //RS485 Direction control
 #endif
 
-#include "Arduino.h"
-
 // function definitions
 void modbus_configure(long baud, byte _slaveID, byte _TxEnablePin, unsigned int _holdingRegsSize);
-
 unsigned int modbus_update(unsigned int *holdingRegs);
-
 
 #endif

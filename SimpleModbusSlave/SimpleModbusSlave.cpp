@@ -3,7 +3,7 @@
 #ifdef _VARIANT_ARDUINO_DUE_X_
 // Due has build in serial
 // https://www.arduino.cc/en/reference/serial
-#define mySerial Serial3
+#define mySerial Serial1
 #else
 
 #include "SoftwareSerial.h"
