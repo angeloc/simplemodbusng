@@ -6,8 +6,8 @@
 #define mySerial Serial1
 #else
 
-#include "SoftwareSerial.h"
-SoftwareSerial mySerial(SSerialRX, SSerialTX); // RX, TX
+#include "AltSoftSerial.h"
+AltSoftSerial mySerial(SSerialRX, SSerialTX); // Const RX=8, TX=9, Blocks PWM on 10
 #endif
 
 #define BUFFER_SIZE 128
@@ -180,6 +180,14 @@ void exceptionResponse(unsigned char exception) {
 }
 
 void modbus_configure(long baud, unsigned char _slaveID, unsigned char _TxEnablePin, unsigned int _holdingRegsSize) {
+#ifdef SSerialEmulatePowerPins
+	pinMode(SSerialVCC, OUTPUT);
+	digitalWrite(SSerialVCC, HIGH);
+	pinMode(SSerialGND, OUTPUT);
+	digitalWrite(SSerialGND, LOW);
+	delay(10);
+#endif
+
 	slaveID = _slaveID;
 	mySerial.begin(baud);
 

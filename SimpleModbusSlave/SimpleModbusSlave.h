@@ -88,9 +88,11 @@
 #define SSerialTxControl 20   //RS485 Direction control
 
 #else
-#define SSerialTX        4  //Serial Transmit pin
-#define SSerialRX        3  //Serial Receive pin
-#define SSerialTxControl 2   //RS485 Direction control
+#define SSerialGND       10
+#define SSerialTX        9  //Serial Transmit pin
+#define SSerialRX        8  //Serial Receive pin
+#define SSerialVCC       7
+#define SSerialTxControl 6   //RS485 Direction control
 #endif
 
 // function definitions
