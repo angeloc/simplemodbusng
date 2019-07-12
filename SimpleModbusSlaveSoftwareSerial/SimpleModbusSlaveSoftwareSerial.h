@@ -83,7 +83,7 @@
 #include "SoftwareSerial.h"
 
 // function definitions
-void modbus_configure(long baud, byte _slaveID, byte _TxEnablePin, unsigned int _holdingRegsSize);
+void modbus_configure(SoftwareSerial* comPort, long baud, unsigned char _slaveID, unsigned char _TxEnablePin, unsigned int _holdingRegsSize);
 unsigned int modbus_update(unsigned int *holdingRegs);
  
 
