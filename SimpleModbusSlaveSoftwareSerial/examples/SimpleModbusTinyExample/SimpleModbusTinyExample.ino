@@ -67,9 +67,20 @@ enum
 unsigned int holdingRegs[TOTAL_REGS_SIZE]; // function 3 and 16 register array
 ////////////////////////////////////////////////////////////
 
+#define RX            0     // Arduino defined pin (PB0, package pin #5)
+#define TX            1     // Arduino defined pin (PB1, package pin #6)
+#define RS485_EN      2     // pin to set transmission mode on RS485 chip (PB2, package pin #7)
+#define BAUD_RATE     9600  // baud rate for serial communication
+#define deviceID      1     // this device address
+
+// SoftwareSerial mySerial(receive pin, transmit pin)
+SoftwareSerial rs485(RX, TX); 
+
 void setup()
 {
-  /* parameters(long baudrate, 
+  /* parameters(
+                SoftwareSerial* comPort
+                long baudrate, 
                 unsigned char ID, 
                 unsigned char transmit enable pin, 
                 unsigned int holding registers size)
@@ -78,7 +89,7 @@ void setup()
      to deactivate this mode use any value < 2 because 0 & 1 is reserved for Rx & Tx
   */
   
-  modbus_configure(9600, 1, 2, TOTAL_REGS_SIZE);
+  modbus_configure(&rs485, BAUD_RATE, deviceID, RS485_EN, TOTAL_REGS_SIZE);
   pinMode(ADC1, INPUT);
   pinMode(ADC2, INPUT);
 }

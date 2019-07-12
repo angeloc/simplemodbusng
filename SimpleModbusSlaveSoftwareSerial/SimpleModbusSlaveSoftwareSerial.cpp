@@ -1,5 +1,4 @@
 #include "SimpleModbusSlaveSoftwareSerial.h"
-#include "SoftwareSerial.h"
 
 #define BUFFER_SIZE 128
 
@@ -14,31 +13,30 @@ unsigned char TxEnablePin;
 unsigned int errorCount;
 unsigned int T1_5; // inter character time out
 unsigned int T3_5; // frame delay
+SoftwareSerial* _port;
 
 // function definitions
 void exceptionResponse(unsigned char exception);
 unsigned int calculateCRC(unsigned char bufferSize); 
 void sendPacket(unsigned char bufferSize);
 
-SoftwareSerial mySerial(0, 1);
-
 unsigned int modbus_update(unsigned int *holdingRegs)
 {
   unsigned char buffer = 0;
   unsigned char overflow = 0;
   
-  while (mySerial.available())
+  while ((*_port).available())
   {
     // The maximum number of bytes is limited to the serial buffer size of 128 bytes
     // If more bytes is received than the BUFFER_SIZE the overflow flag will be set and the 
     // serial buffer will be red untill all the data is cleared from the receive buffer.
     if (overflow) 
-      mySerial.read();
+      (*_port).read();
     else
     {
       if (buffer == BUFFER_SIZE)
         overflow = 1;
-      frame[buffer] = mySerial.read();
+      frame[buffer] = (*_port).read();
       buffer++;
     }
     delayMicroseconds(T1_5); // inter character time out
@@ -190,10 +188,11 @@ void exceptionResponse(unsigned char exception)
   }
 }
 
-void modbus_configure(long baud, unsigned char _slaveID, unsigned char _TxEnablePin, unsigned int _holdingRegsSize)
+void modbus_configure(SoftwareSerial* comPort, long baud, unsigned char _slaveID, unsigned char _TxEnablePin, unsigned int _holdingRegsSize)
 {
+  _port = comPort;
   slaveID = _slaveID;
-  mySerial.begin(baud);
+  (*_port).begin(baud);
   
   if (_TxEnablePin > 1) 
   { // pin 0 & pin 1 are reserved for RX/TX. To disable set txenpin < 2
@@ -254,9 +253,9 @@ void sendPacket(unsigned char bufferSize)
     digitalWrite(TxEnablePin, HIGH);
     
   for (unsigned char i = 0; i < bufferSize; i++)
-    mySerial.write(frame[i]);
+    (*_port).write(frame[i]);
     
-  mySerial.flush();
+  (*_port).flush();
   
   // allow a frame delay to indicate end of transmission
   delayMicroseconds(T3_5); 
