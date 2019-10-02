@@ -52,7 +52,7 @@
 //////////////// registers of your slave ///////////////////
 enum 
 {     
-  // just add or remove registers and your good to go...
+  // just add or remove registers and you're good to go...
   // The first register starts at address 0
   ADC0,     
   ADC1,        
