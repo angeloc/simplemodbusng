@@ -1,13 +1,14 @@
 #include <SoftwareSerial.h>
 #include <SimpleModbusSlaveSoftwareSerial.h>
 
+#define  buttonPin0  2 // push button
+#define  buttonPin1  3 // push button
 
-/* This example code has 9 holding registers. 6 analogue inputs, 1 button, 1 digital output
+/* This example code has 2 holding registers. 2 buttons,
    and 1 register to indicate errors encountered since started.
-   Function 5 (write single coil) is not implemented so I'm using a whole register
-   and function 16 to set the onboard Led on the Atmega328P.
 
-   The modbus_update() method updates the holdingRegs register array and checks communication.
+   The modbus_update() method updates the holdingRegs register array
+   and checks communication.
 
    Note:
    The Arduino serial ring buffer is 128 bytes or 64 registers.
@@ -52,11 +53,8 @@
 enum {
     // just add or remove registers and your good to go...
     // The first register starts at address 0
-    PWM_0,
-    PWM_1,
-    ADC0,
-    ADC1,
-    ADC2,
+    BUTTON0,
+    BUTTON1,
     TOTAL_ERRORS,
     // leave this one
     TOTAL_REGS_SIZE
@@ -66,14 +64,13 @@ enum {
 unsigned int holdingRegs[TOTAL_REGS_SIZE]; // function 3 and 16 register array
 ////////////////////////////////////////////////////////////
 
-#define RX            0     // Arduino defined pin (PB0, package pin #5)
-#define TX            1     // Arduino defined pin (PB1, package pin #6)
-#define RS485_EN      2     // pin to set transmission mode on RS485 chip (PB2, package pin #7)
-#define BAUD_RATE     9600  // baud rate for serial communication
-#define deviceID      1     // this device address
+#define RX            0       // Arduino defined pin (PB0, package pin #5)
+#define TX            1       // Arduino defined pin (PB1, package pin #6)
+#define RS485_EN      2       // pin to set transmission mode on RS485 chip (PB2, package pin #7)
+#define BAUD_RATE     115200  // baud rate for serial communication
+#define deviceID      3       // this device address
 
-// SoftwareSerial mySerial(receive pin, transmit pin)
-SoftwareSerial rs485(RX, TX);
+SoftwareSerial mySerial(RX, TX);
 
 void setup()
 {
@@ -88,20 +85,20 @@ void setup()
        to deactivate this mode use any value < 2 because 0 & 1 is reserved for Rx & Tx
     */
 
-    modbus_configure(&rs485, BAUD_RATE, deviceID, RS485_EN, TOTAL_REGS_SIZE);
-    pinMode(ADC1, INPUT);
-    pinMode(ADC2, INPUT);
+    modbus_configure(&mySerial, BAUD_RATE, deviceID, RS485_EN, TOTAL_REGS_SIZE);
+    pinMode(buttonPin0, INPUT);
+    pinMode(buttonPin1, INPUT);
 }
 
 void loop()
 {
-    // modbus_update() is the only method used in loop(). It r eturns the total error
+    // modbus_update() is the only method used in loop(). It returns the total error
     // count since the slave started. You don't have to use it but it's useful
     // for fault finding by the modbus master.
     holdingRegs[TOTAL_ERRORS] = modbus_update(holdingRegs);
-    for (byte i = ADC1; i < TOTAL_ERRORS; i++) {
-        holdingRegs[i] = analogRead(i);
-        delayMicroseconds(50);
-    }
+    holdingRegs[BUTTON0] = analogRead(buttonPin0);
+    delayMicroseconds(50);
+    holdingRegs[BUTTON1] = analogRead(buttonPin1);
+    delayMicroseconds(50);
 }
 
