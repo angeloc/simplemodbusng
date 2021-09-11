@@ -84,7 +84,7 @@ void setup()
        but practically it works with all major modbus master implementations.
     */
 
-    modbus_configure(115200, 1, 2, TOTAL_REGS_SIZE, 0);
+    modbus_configure(115200, 2, 2, TOTAL_REGS_SIZE, 0);
     pinMode(ledPin, OUTPUT);
     pinMode(buttonPin, INPUT);
 }
@@ -110,9 +110,8 @@ void loop()
 
     if (ledState) // set led
         digitalWrite(ledPin, HIGH);
-    if (ledState == 0 || buttonState) { // reset led
+    if (ledState == 0) { // reset led
         digitalWrite(ledPin, LOW);
-        holdingRegs[LED_STATE] = 0;
     }
 }
 
