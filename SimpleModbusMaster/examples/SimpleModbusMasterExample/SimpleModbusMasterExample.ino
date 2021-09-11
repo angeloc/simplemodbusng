@@ -63,20 +63,16 @@
    Function 16 - PRESET_MULTIPLE_REGISTERS
 
    The example sketch will read a packet consisting
-   of 3 registers from address 0 using function 3 from
-   the GM7U LS Industrial PLC (id = 2) and then write
-   another packet containing the same 3 registers and
-   the counter information of both packets using function 16
-   to address 3 in the PLC. Using the supplied PLC software
-   you can then view in realtime what the values are in
-   the PLC's registers.
+   of 9 registers from address 0 using function 3 from
+   the SimpleModbusSlave example and then write
+   another packet containing a value to toggle the led.s
 */
 
 // led to indicate that a communication error is present
 #define connection_error_led 13
 
 //////////////////// Port information ///////////////////
-#define baud 9600
+#define baud 115200
 #define timeout 1000
 #define polling 200 // the scan rate
 
@@ -112,6 +108,9 @@ packetPointer packet2 = &packets[PACKET2];
 // The data from the PLC will be stored
 // in the regs array
 unsigned int regs[9];
+unsigned int write_regs[1];
+
+unsigned long last_toggle = 0;
 
 void setup()
 {
@@ -119,18 +118,16 @@ void setup()
     packet1->id = 2;
     packet1->function = READ_HOLDING_REGISTERS;
     packet1->address = 0;
-    packet1->no_of_registers = 3;
+    packet1->no_of_registers = 9;
     packet1->register_array = regs;
 
     // write the 9 registers to the PLC starting at address 3
     packet2->id = 2;
     packet2->function = PRESET_MULTIPLE_REGISTERS;
-    packet2->address = 3;
-    packet2->no_of_registers = 9;
-    packet2->register_array = regs;
-
-    // P.S. the register_array entries above can be different arrays
-
+    packet2->address = 6;
+    packet2->no_of_registers = 1;
+    packet2->register_array = write_regs;
+    
     // Initialize communication settings etc...
     modbus_configure(baud, timeout, polling, retry_count, TxEnablePin, packets, TOTAL_NO_OF_PACKETS);
 
@@ -141,18 +138,16 @@ void loop()
 {
     unsigned int connection_status = modbus_update(packets);
 
+    if (millis() - last_toggle > 1000) {
+        last_toggle = millis();
+        write_regs[0] = led_on;
+    }
+
     if (connection_status != TOTAL_NO_OF_PACKETS) {
         digitalWrite(connection_error_led, HIGH);
         // You could re-enable the connection by:
         //packets[connection_status].connection = true;
-    } else
+    } else {
         digitalWrite(connection_error_led, LOW);
-
-    // update the array with the counter data
-    regs[3] = packet1->requests;
-    regs[4] = packet1->successful_requests;
-    regs[5] = packet1->total_errors;
-    regs[6] = packet2->requests;
-    regs[7] = packet2->successful_requests;
-    regs[8] = packet2->total_errors;
+    }
 }
